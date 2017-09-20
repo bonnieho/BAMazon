@@ -226,7 +226,8 @@ function newItem(){
     ]).then(function(itsNew){
         console.log(itsNew.item);
         var insertQuery = "INSERT INTO products (item_id, product_name, department_name, price, stock_quantity) VALUES (?, ?, ?, ?, ?);"
-        connection.query(insertQuery, {item_id: itsNew.item, product_name: itsNew.prodname, department_name: itsNew.deptname, price: itsNew.newPrice, stock_quantity: itsNew.qty}, function(err, res) {
+        // var insertQuery = "INSERT INTO products (item_id, product_name, department_name, price, stock_quantity) VALUES (*);"
+        connection.query(insertQuery, [ itsNew.item, itsNew.prodname, itsNew.deptname, itsNew.newPrice, itsNew.qty ], function(err, res) {
         		if(err) throw err;
 				console.log(itsNew.item);
 			});
@@ -242,13 +243,11 @@ function newItem(){
               return true;
               }
             return 'Please enter a valid item ID';
-            } */
+            } 
 
         // item: user.item,
- /*       
-      })
-}; 
-*/
+ */       
+ 
 
 
 
