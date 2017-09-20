@@ -224,13 +224,14 @@ function newItem(){
           name:"qty"
         }
     ]).then(function(itsNew){
-        console.log(itsNew.item);
         var insertQuery = "INSERT INTO products (item_id, product_name, department_name, price, stock_quantity) VALUES (?, ?, ?, ?, ?);"
         // var insertQuery = "INSERT INTO products (item_id, product_name, department_name, price, stock_quantity) VALUES (*);"
         connection.query(insertQuery, [ itsNew.item, itsNew.prodname, itsNew.deptname, itsNew.newPrice, itsNew.qty ], function(err, res) {
         		if(err) throw err;
 
-				console.log("You have successfully added a product to your inventory.");
+        		var boldNewItem = itsNew.prodname.toUpperCase();
+
+				console.log("You have successfully added a new product called " + boldNewItem + " to your inventory.");
         		console.log("Here is the new record:");
         	
         	});
