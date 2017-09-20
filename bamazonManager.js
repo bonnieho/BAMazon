@@ -51,6 +51,8 @@ inquirer.
         viewProds();
       }else if(user.choice == "View Low Inventory"){
         lowInv();
+      }else if(user.choice == "Add to Inventory"){
+        addQty();
       }else{
           console.log("something else");
           // BidItem();
@@ -116,25 +118,35 @@ function lowInv() {
 
 
 
-
 /* =============================================================== */
 /* ADD more of a particular product to the inventory (database) */
 
-
-/*
-function newItem(){
-  inquirer.
+function addQty(){
+	// display low inventory table first
+	lowInv();
+  	inquirer.
     prompt([
         {
           type:"input",
-          message:"What item would you like to add?",
+          message:"What item would you like to add more units to?",
           name:"item"
         }
-    ]).then(function(user){
-        console.log(user.item);
-        connection.query("INSERT INTO products ", function(err, res) {
+        {
+          type:'input',
+          message:'How many would you like to add?',
+          name:'qty',
+          validate: function (qty) {
+            var valid = !isNaN(parseFloat(qty));
+            return valid || 'Please enter a number';
+          }
+      	},
+    ]).then(function(add){
+    	var query = "UPDATE products SET stock_quantity = ? WHERE product_name = ?;";
+        connection.query(query, { product_name: add.item, stock_quantity: add.qty }, function(err, res) {
         	if(err) throw err;
-*/
+        	console.log(res);
+            console.log(res[0].stock_quantity);
+            console.log(order.qty);
 
 /* 
           to validate a item ID entry using regular expression
@@ -147,7 +159,10 @@ function newItem(){
             } */
 
         // item: user.item,
-
+        )
+    }
+}
+}
 
 
 

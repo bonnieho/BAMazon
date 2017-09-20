@@ -90,8 +90,8 @@ function buyItem(){
           connection.query(query, { product_name: order.item }, function(err, res) {
             if (err) throw err;
             // console.log(res);
-            console.log(res[0].stock_quantity);
-            console.log(order.qty);
+            // console.log(res[0].stock_quantity);
+            // console.log(order.qty);
             /* check if your store has enough of the product to meet the customer's request. */
             if (res[0].stock_quantity < order.qty) {
 
