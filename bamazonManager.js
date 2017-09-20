@@ -165,7 +165,7 @@ function addQty(){
 
 
 /* =============================================================== */
-/* This displays only the product whose quantity was just updated */
+/* This displays only the product whose quantity was just updated OR just the new record added to the DB */
 
 function viewProd(item){
   connection.query("SELECT item_id, product_name, price, stock_quantity FROM products WHERE ?;", 
@@ -229,8 +229,17 @@ function newItem(){
         // var insertQuery = "INSERT INTO products (item_id, product_name, department_name, price, stock_quantity) VALUES (*);"
         connection.query(insertQuery, [ itsNew.item, itsNew.prodname, itsNew.deptname, itsNew.newPrice, itsNew.qty ], function(err, res) {
         		if(err) throw err;
-				console.log(itsNew.item);
-			});
+
+				console.log("You have successfully added a product to your inventory.");
+        		console.log("Here is the new record:");
+        	
+        	});
+
+       return itsNew.item;
+
+       // show that record was updated successfully by calling the viewProd function that just displays the record that was updated (in table format)
+    }).then (function(item){ 
+    	viewProd(item);
 	});
 };
 
