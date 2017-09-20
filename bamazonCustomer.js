@@ -11,17 +11,18 @@ var connection = mysql.createConnection({
   database: "bamazon"
 });
 
-/* this works to display the products in a table */
+/* this works to simply display the products in a table */
 
 function selectAll(){
   connection.query("SELECT item_id, product_name, price FROM products;", function(err, res){
     if(err) throw err;
     // console.log(res);
-
+    var aligns = [null, null, 'right'];
     // instantiate 
     var tableInventory = new Table({
       head: ['Item ID', 'Product Name', 'Price']
       , colWidths: [10, 48, 10]
+      , colAligns: aligns
     });
 
     // loop through products in store
@@ -39,47 +40,41 @@ function selectAll(){
 
 
 
-// trying this as a mashup of what worked before with trying ot get the promot to populate with the product names
+// This is the mashup of what worked to display the table with also getting the prompt to populate with the product names
 
 function buyItem(){
   connection.query("SELECT item_id, product_name, price FROM products;", function(err, res) {
     if (err) throw err;
     // console.log(res);
-            var aligns = [null, null, 'right'];
-            // instantiate 
-                var tableInventory = new Table({
-                  head: ['Item ID', 'Product Name', 'Price']
-                  , colWidths: [10, 48, 10]
-                  , colAligns: aligns
-                });
+    var aligns = [null, null, 'right'];
+    // instantiate 
+    var tableInventory = new Table({
+      head: ['Item ID', 'Product Name', 'Price']
+      , colWidths: [10, 48, 10]
+      , colAligns: aligns
+    });
 
-                // loop through products in store
-                for(i=0; i<res.length; i++){
-                  // the tableInventory is an Array, so you can `push`, `unshift`, `splice` and the rest 
-                  tableInventory.push(
-                    [res[i].item_id, res[i].product_name, res[i].price.toFixed(2)] // .toFixed(2) forces trailing zeros in prices
-                  );   
-                };
-                console.log(tableInventory.toString());
+    // setting a name for a new array that gets all of the current product names pushed to it as the loop iterates
+    var prodNames = [];
 
+    // loop through products in store
+    for(i=0; i<res.length; i++){
+      // the tableInventory is an Array, so you can `push`, `unshift`, `splice` and the rest 
+      tableInventory.push(
+        [res[i].item_id, res[i].product_name, res[i].price.toFixed(2)] // .toFixed(2) forces trailing zeros in prices
+      ); 
+      prodNames.push(res[i].product_name);  
+    };
+    console.log(tableInventory.toString());
 
-
-   inquirer.
+    // launching the prompt, listing the products to select from and then takes the customer's desired quantity amount
+    inquirer.
     prompt([
         {
           type:'list',
-          choices: tableInventory[0],
+          choices: prodNames,
           message: "Which product would you like to purchase?",
           name: "item",
-          /* 
-          to validate a item ID entry using regular expression
-          validate: function (item) {
-            var prod = item.match(/^( \D{6});
-            if (prod) {
-              return true;
-              }
-            return 'Please enter a valid item ID';
-            } */
         },
         {
           type:'input',
@@ -90,16 +85,44 @@ function buyItem(){
             return valid || 'Please enter a number';
           },
         }
-      ]).then(function(user){
-       for (var i = 0; i < res.length; i++) {
-          console.log(user.item);
-          console.log(user.qty);
-        }
+      ]).then(function(order){
+          var query = "SELECT stock_quantity, price FROM products WHERE ?";
+          connection.query(query, { product_name: order.item }, function(err, res) {
+            if (err) throw err;
+            // console.log(res);
+            console.log(res[0].stock_quantity);
+            console.log(order.qty);
+            /* check if your store has enough of the product to meet the customer's request. */
+            if (res[0].stock_quantity < order.qty) {
+
+              /* If not, the app should log a phrase like Insufficient quantity!, and then prevent the order from going through. */
+
+              console.log("We\'re sorry - We do not have sufficient quantities of the product in stock at this time!");
+              console.log("Thank you for your interest. Please check back again soon.");
+            } else {
+               
+              /* However, if your store does have enough of the product, you should fulfill the customer's order.
+                  This means updating the SQL database to reflect the remaining quantity. */
+
+              // Once the update goes through, show the customer the total cost of their purchase. 
+              var total = (res[0].price*order.qty); 
+              console.log("You are placing an order for " + order.qty + " " + order.item + "(s) at $" + res[0].price.toFixed(2) + " each.");
+              console.log("Your item is currently in stock.");
+              console.log("The total for this order is: $" + total.toFixed(2));
+              console.log("Thank you for shopping with us!");
+            }
+        })
       })
   });
 }    
 
 buyItem();
+
+
+
+
+
+
 
 /*
 
@@ -198,13 +221,5 @@ function BidItem(){
 }    
 
 
-
-
-// function selectAll(){
-//     connection.query(“SELECT * FROM table”, function(err, res){
-//         if(err) throw err;
-//         console.log(res);
-//     });
-// }
-
 */
+
