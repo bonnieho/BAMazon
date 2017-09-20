@@ -9,7 +9,7 @@ var connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
   user: "root",
-  password: "H33zy4s!",
+  password: "",
   database: "bamazon"
 });
 
@@ -53,12 +53,13 @@ inquirer.
         lowInv();
       }else if(user.choice == "Add to Inventory"){
         addQty();
+      }else if(user.choice == "Add New Product"){
+        newItem();
       }else{
-          console.log("something else");
-          // BidItem();
-        }
-      
+        console.log("something went sideways!");
+        }  
    });
+
 
 /* =============================================================== */
 /* this works to display the products in a table */
@@ -85,8 +86,6 @@ function viewProds(){
     console.log(tableInventory.toString());
   });
 };
-
-// viewProds();
 
 
 
@@ -122,15 +121,22 @@ function lowInv() {
 /* ADD more of a particular product to the inventory (database) */
 
 function addQty(){
-	// display low inventory table first
-	lowInv();
+
   	inquirer.
     prompt([
         {
           type:"input",
-          message:"What item would you like to add more units to?",
-          name:"item"
-        }
+          message:"What item would you like to add more units to? Enter the Item ID.",
+          name:"item" //,
+          // to validate a item ID entry using regular expression to ensure that only six digits are entered
+          /* validate: function (item) {
+            var prod = item.match(/^( \D{6});
+            if (prod) {
+              return true;
+              }
+            return 'Please enter a valid item ID';
+            } */
+        },
         {
           type:'input',
           message:'How many would you like to add?',
@@ -141,13 +147,29 @@ function addQty(){
           }
       	},
     ]).then(function(add){
-    	var query = "UPDATE products SET stock_quantity = ? WHERE product_name = ?;";
-        connection.query(query, { product_name: add.item, stock_quantity: add.qty }, function(err, res) {
-        	if(err) throw err;
-        	console.log(res);
-            console.log(res[0].stock_quantity);
-            console.log(order.qty);
+    	// var query = "SELECT stock_quantity FROM products WHERE ?;";
+        // connection.query(query, { item_id: add.item }, function(err, res) {
+        	// if(err) throw err;
+        		// console.log(res);
+            	// console.log(add.item);
+            	// console.log(add.qty);
+            	// console.log(res[0].stock_quantity);
 
+            // var x = parseInt(res[0].stock_quantity);
+            // var y = parseInt(add.qty);
+            // var total = (x + y);
+            // console.log(total);
+        // });
+        var updateQuery = "UPDATE products SET stock_quantity = ? WHERE ?;";
+        connection.query(updateQuery, { total, item_id: add.item }, function(err, res) {
+        	if(err) throw err;
+        	var x = parseInt(res[0].stock_quantity);
+            var y = parseInt(add.qty);
+            var total = (x + y);
+            console.log(total);
+        	console.log("all good");
+        });
+    });
 /* 
           to validate a item ID entry using regular expression
           validate: function (item) {
@@ -159,31 +181,52 @@ function addQty(){
             } */
 
         // item: user.item,
-        )
     }
-}
-}
-
-
-
-
+        
+    
 /* =============================================================== */
 /* ADDS a NEW product to the inventory (database) */
 
-/*
+
 function newItem(){
   inquirer.
     prompt([
         {
           type:"input",
-          message:"What item would you like to add?",
+          message:"Create a six-letter Item ID",
           name:"item"
+        },
+        {
+          type:"input",
+          message:"What is the Product Name of the item would you like to add?",
+          name:"prodname"
+        },
+        {
+          type:"list",
+          choices: ["Sporting Goods", "Hardware", "Kitchen"],
+          message:"What department does the product belong in?",
+          name:"deptname"
+        },
+        {
+          type:"input",
+          message:"What will the item cost?",
+          name:"newPrice"
+        },
+        {
+          type:"input",
+          message:"How many will go into the inventory intitially?",
+          name:"qty"
         }
-    ]).then(function(user){
-        console.log(user.item);
-        connection.query("INSERT INTO products ", function(err, res) {
-        	if(err) throw err;
-*/
+    ]).then(function(itsNew){
+        console.log(itsNew.item);
+        var insertQuery = "INSERT INTO products (item_id, product_name, department_name, price, stock_quantity) VALUES (?, ?, ?, ?, ?);"
+        connection.query(insertQuery, {item_id: itsNew.item, product_name: itsNew.prodname, department_name: itsNew.deptname, price: itsNew.newPrice, stock_quantity: itsNew.qty}, function(err, res) {
+        		if(err) throw err;
+				console.log(itsNew.item);
+			});
+	});
+};
+
 
 /* 
           to validate a item ID entry using regular expression
