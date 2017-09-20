@@ -9,7 +9,7 @@ var connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
   user: "root",
-  password: "",
+  password: "H33zy4s!",
   database: "bamazon"
 });
 
@@ -146,7 +146,7 @@ function addQty(){
             return valid || 'Please enter a number';
           }
       	},
-    ]).then(function(add){
+    ]).then(function(increase){
     	// var query = "SELECT stock_quantity FROM products WHERE ?;";
         // connection.query(query, { item_id: add.item }, function(err, res) {
         	// if(err) throw err;
@@ -160,14 +160,18 @@ function addQty(){
             // var total = (x + y);
             // console.log(total);
         // });
-        var updateQuery = "UPDATE products SET stock_quantity = ? WHERE ?;";
-        connection.query(updateQuery, { total, item_id: add.item }, function(err, res) {
+        	// var x = parseInt(res[0].stock_quantity);
+            // var y = parseInt(add.qty);
+            // var total = (x + y);
+            // console.log(total);
+        var updateQuery = "UPDATE products SET stock_quantity = stock_quantity + ? WHERE ?;";
+        // WHERE clause takes object consisting of key value pairs, hence the curlies
+        connection.query(updateQuery, [ increase.qty, { item_id: increase.item }], function(err, res) {
         	if(err) throw err;
-        	var x = parseInt(res[0].stock_quantity);
-            var y = parseInt(add.qty);
-            var total = (x + y);
-            console.log(total);
+        	
         	console.log("all good");
+        	// show that record was updated successfully
+        	//console.log()
         });
     });
 /* 
