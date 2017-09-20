@@ -65,14 +65,14 @@ inquirer.
 /* this works to display the products in a table */
 
 function viewProds(){
-  connection.query("SELECT item_id, product_name, price FROM products;", function(err, res){
+  connection.query("SELECT item_id, product_name, price, stock_quantity FROM products;", function(err, res){
     if(err) throw err;
     // console.log(res);
-	var aligns = [null, null, 'right'];
+	var aligns = [null, null, 'right', 'right'];
     // instantiate 
     var tableInventory = new Table({
-    	head: ['Item ID', 'Product Name', 'Price']
-        , colWidths: [10, 48, 10]
+    	head: ['Item ID', 'Product Name', 'Price', 'Quantity']
+        , colWidths: [10, 48, 10, 10]
         , colAligns: aligns
     });
 
@@ -80,12 +80,12 @@ function viewProds(){
     for(i=0; i<res.length; i++){
       // the tableInventory is an Array, so you can `push`, `unshift`, `splice` and the rest 
       tableInventory.push(
-        [res[i].item_id, res[i].product_name, res[i].price.toFixed(2)] // .toFixed(2) forces trailing zeros in prices
+        [res[i].item_id, res[i].product_name, res[i].price.toFixed(2), res[i].stock_quantity] // .toFixed(2) forces trailing zeros in prices
       );   
     };
     console.log(tableInventory.toString());
   });
-};
+}
 
 
 
@@ -112,8 +112,6 @@ function lowInv() {
     console.log(tableInventory.toString());
   });
 }
-
-// lowInv();
 
 
 
@@ -147,45 +145,49 @@ function addQty(){
           }
       	},
     ]).then(function(increase){
-    	// var query = "SELECT stock_quantity FROM products WHERE ?;";
-        // connection.query(query, { item_id: add.item }, function(err, res) {
-        	// if(err) throw err;
-        		// console.log(res);
-            	// console.log(add.item);
-            	// console.log(add.qty);
-            	// console.log(res[0].stock_quantity);
-
-            // var x = parseInt(res[0].stock_quantity);
-            // var y = parseInt(add.qty);
-            // var total = (x + y);
-            // console.log(total);
-        // });
-        	// var x = parseInt(res[0].stock_quantity);
-            // var y = parseInt(add.qty);
-            // var total = (x + y);
-            // console.log(total);
         var updateQuery = "UPDATE products SET stock_quantity = stock_quantity + ? WHERE ?;";
         // WHERE clause takes object consisting of key value pairs, hence the curlies
         connection.query(updateQuery, [ increase.qty, { item_id: increase.item }], function(err, res) {
         	if(err) throw err;
         	
-        	console.log("all good");
-        	// show that record was updated successfully
-        	//console.log()
+        	console.log("You have successfully modified the product\'s quantity in inventory.");
+        	console.log("Here is the updated record:");
+        	
         });
-    });
-/* 
-          to validate a item ID entry using regular expression
-          validate: function (item) {
-            var prod = item.match(/^( \D{6});
-            if (prod) {
-              return true;
-              }
-            return 'Please enter a valid item ID';
-            } */
 
-        // item: user.item,
-    }
+        return increase.item;
+
+    // show that record was updated successfully by calling the viewProd function that just displays the record that was updated (in table format)
+    }).then (function(item){ 
+    	viewProd(item);
+	});
+}
+
+
+/* =============================================================== */
+/* This displays only the product whose quantity was just updated */
+
+function viewProd(item){
+  connection.query("SELECT item_id, product_name, price, stock_quantity FROM products WHERE ?;", 
+  	{ item_id: item }, function(err, res){
+	    if(err) throw err;
+	    // console.log(res);
+		var aligns = [null, null, 'right', 'right'];
+	    // instantiate 
+	    var tableInventory = new Table({
+	    	head: ['Item ID', 'Product Name', 'Price', 'Quantity']
+	        , colWidths: [10, 48, 10, 10]
+	        , colAligns: aligns
+    });
+
+	// the tableInventory is an Array, so you can `push`, `unshift`, `splice` and the rest 
+	tableInventory.push(
+	  [res[0].item_id, res[0].product_name, res[0].price.toFixed(2), res[0].stock_quantity] // .toFixed(2) forces trailing zeros in prices
+	);   
+    console.log(tableInventory.toString());
+  });
+};
+
         
     
 /* =============================================================== */
@@ -247,5 +249,9 @@ function newItem(){
       })
 }; 
 */
+
+
+
+
 
 
