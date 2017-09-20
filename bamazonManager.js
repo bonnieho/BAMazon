@@ -12,7 +12,7 @@ var connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
   user: "root",
-  password: "H33zy4s!",
+  password: "",
   database: "bamazon"
 });
 
@@ -72,17 +72,17 @@ function startMeUp() {
 	        console.log(oneLine);
 	        startMeUp();
 	      }else if(user.choice == "Modify Inventory Quantities"){
+	      	console.log("\nModifying In-Stock Product Amounts ...\n");
 	        addQty();
 	        console.log(oneLine);
-	        // startMeUp();
 	      }else if(user.choice == "Add New Product"){
+	      	console.log("\nCreating entry for new item ...\n");
 	      	giveMeSpace();
-	      	console.log("Adding New Product to Inventory ...");
 	        newItem();
 	        console.log(oneLine);
 	      }else if(user.choice == "Quit this Program\n\r"){
 	      	giveMeSpace();
-	      	console.log("Exiting the program ...")
+	      	console.log("Exiting the program ...\n\r");
 	        process.kill(process.pid);
 	      }else{
 	        console.log("something went sideways!");
@@ -97,14 +97,14 @@ function viewProds(){
 	// adding space before rendered table
    console.log(oneLine);
 
-  connection.query("SELECT item_id, product_name, price, stock_quantity FROM products;", function(err, res){
+  connection.query("SELECT item_id, product_name, department_name, price, stock_quantity FROM products;", function(err, res){
     if(err) throw err;
     // console.log(res);
-	var aligns = [null, null, 'right', 'right'];
+	var aligns = [null, null, null, 'right', 'right'];
     // instantiate 
     var tableInventory = new Table({
-    	head: ['Item ID', 'Product Name', 'Price', 'Quantity']
-        , colWidths: [10, 48, 10, 10]
+    	head: ['Item ID', 'Product Name', 'Department', 'Price', 'Quantity']
+        , colWidths: [10, 48, 18, 10, 10]
         , colAligns: aligns
     });
 
@@ -112,7 +112,7 @@ function viewProds(){
     for(i=0; i<res.length; i++){
       // the tableInventory is an Array, so you can `push`, `unshift`, `splice` and the rest 
       tableInventory.push(
-        [res[i].item_id, res[i].product_name, res[i].price.toFixed(2), res[i].stock_quantity] // .toFixed(2) forces trailing zeros in prices
+        [res[i].item_id, res[i].product_name, res[i].department_name, res[i].price.toFixed(2), res[i].stock_quantity] // .toFixed(2) forces trailing zeros in prices
       );   
     };
     // giving the table a caption
@@ -136,20 +136,20 @@ function lowInv() {
 	// adding space before rendered table
    console.log(oneLine);
 
-  var query = "SELECT item_id, product_name, price, stock_quantity FROM products WHERE stock_quantity < 5";
+  var query = "SELECT item_id, product_name, department_name, price, stock_quantity FROM products WHERE stock_quantity < 5";
   connection.query(query, function(err, res) {
   	if(err) throw err;
-  	var aligns = [null, null, 'right', 'right'];
+  	var aligns = [null, null, null, 'right', 'right'];
     // instantiate 
     var tableInventory = new Table({
-    	head: ['Item ID', 'Product Name', 'Price', 'Quantity']
-        , colWidths: [10, 48, 10, 10]
+    	head: ['Item ID', 'Product Name', 'Department', 'Price', 'Quantity']
+        , colWidths: [10, 48, 18, 10, 10]
         , colAligns: aligns
     });
     for (var i = 0; i < res.length; i++) {
       // the tableInventory is an Array, so you can `push`, `unshift`, `splice` and the rest 
       tableInventory.push(
-        [res[i].item_id, res[i].product_name, res[i].price.toFixed(2), res[i].stock_quantity] // .toFixed(2) forces trailing zeros in prices
+        [res[i].item_id, res[i].product_name, res[i].department_name, res[i].price.toFixed(2), res[i].stock_quantity] // .toFixed(2) forces trailing zeros in prices
       );   
     };
 
@@ -189,7 +189,7 @@ function addQty(){
     prompt([
         {
           type:"input",
-          message:"What item would you like to add more units to? Enter the Item ID.",
+          message:"What item would you like to add more units to? Enter the Item ID:",
           name:"item" //,
           // to validate a item ID entry using regular expression to ensure that only six digits are entered
           /* validate: function (item) {
@@ -210,14 +210,13 @@ function addQty(){
           }
       	},
     ]).then(function(increase){
-    	console.log("\nModifying In-Stock Product Amounts ...\n");
         var updateQuery = "UPDATE products SET stock_quantity = stock_quantity + ? WHERE ?;";
-        // WHERE clause takes object consisting of key value pairs, hence the curlies
+        // the WHERE clause takes object consisting of key value pairs, hence the curlies
         connection.query(updateQuery, [ increase.qty, { item_id: increase.item }], function(err, res) {
         	if(err) throw err;
         	
         	console.log("You have successfully modified the product\'s quantity in inventory.");
-        	console.log("Here is the updated record:");
+        	console.log("\nHere is the updated record:");
         	
         });
 
@@ -234,21 +233,21 @@ function addQty(){
 /* This displays only the product whose quantity was just updated OR just the new record added to the DB */
 
 function viewProd(item){
-  connection.query("SELECT item_id, product_name, price, stock_quantity FROM products WHERE ?;", 
+  connection.query("SELECT item_id, product_name, department_name, price, stock_quantity FROM products WHERE ?;", 
   	{ item_id: item }, function(err, res){
 	    if(err) throw err;
 	    // console.log(res);
-		var aligns = [null, null, 'right', 'right'];
-	    // instantiate 
-	    var tableInventory = new Table({
-	    	head: ['Item ID', 'Product Name', 'Price', 'Quantity']
-	        , colWidths: [10, 48, 10, 10]
-	        , colAligns: aligns
+		var aligns = [null, null, null, 'right', 'right'];
+    // instantiate 
+    var tableInventory = new Table({
+    	head: ['Item ID', 'Product Name', 'Department', 'Price', 'Quantity']
+        , colWidths: [10, 48, 18, 10, 10]
+        , colAligns: aligns
     });
 
 	// the tableInventory is an Array, so you can `push`, `unshift`, `splice` and the rest 
 	tableInventory.push(
-	  [res[0].item_id, res[0].product_name, res[0].price.toFixed(2), res[0].stock_quantity] // .toFixed(2) forces trailing zeros in prices
+	  [res[0].item_id, res[0].product_name, res[0].department_name, res[0].price.toFixed(2), res[0].stock_quantity] // .toFixed(2) forces trailing zeros in prices
 	);   
     console.log(tableInventory.toString());
 

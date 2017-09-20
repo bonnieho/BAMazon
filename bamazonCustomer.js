@@ -1,15 +1,30 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 var Table = require("cli-table");
+// this lets us format EOL spacing around text so it's more readable doesn't overlap any resulting full or partial table
+var os = require('os');
+
 
 
 var connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
   user: "root",
-  password: "H33zy4s!",
+  password: "",
   database: "bamazon"
 });
+
+
+// Global spacing vars and function to help readability
+var jsonText = os.EOL;
+var oneLine = "\n\r";
+
+function giveMeSpace() {
+      console.log(jsonText);
+      console.log(oneLine);
+  }
+
+
 
 /* this works to simply display the products in a table */
 
@@ -65,6 +80,11 @@ function buyItem(){
       ); 
       prodNames.push(res[i].product_name);  
     };
+
+     // giving the table a caption
+    console.log("\n\rCurrent Products for Sale");
+
+    // displays the inventory table
     console.log(tableInventory.toString());
 
     // launching the prompt, listing the products to select from and then takes the customer's desired quantity amount
@@ -73,7 +93,7 @@ function buyItem(){
         {
           type:'list',
           choices: prodNames,
-          message: "Which product would you like to purchase?",
+          message: "\n\rWhich product would you like to purchase?\n\r",
           name: "item",
         },
         {
@@ -106,19 +126,47 @@ function buyItem(){
 
               // Once the update goes through, show the customer the total cost of their purchase. 
               var total = (res[0].price*order.qty); 
-              console.log("You are placing an order for " + order.qty + " " + order.item + "(s) at $" + res[0].price.toFixed(2) + " each.");
-              console.log("Your item is currently in stock.");
-              console.log("The total for this order is: $" + total.toFixed(2));
-              console.log("Thank you for shopping with us!");
+              console.log("\n\rYou are placing an order for " + order.qty + " " + order.item + "(s) at $" + res[0].price.toFixed(2) + " each.");
+              console.log("\n\rYour item is currently in stock.");
+              console.log("\n\rThe total for this order is: $" + total.toFixed(2));
+              console.log("\n\rThank you for shopping with us!");
+              // follow-up prompt
+              whatNow();
             }
         })
       })
   });
+
 }    
 
 buyItem();
 
 
+// Follow-up prompt to do it again or quit
+function whatNow(){
+  inquirer.
+      prompt([
+          {
+            type:'list',
+            choices: ["Place Another Order?", "Quit this Program\n\r" ],
+            message: "\nHow else can we be of service?\n",
+            name: "choice"
+          }
+        ]).then(function(user){
+          console.log(user.choice);
+          if(user.choice == "Place Another Order?"){
+            buyItem();
+            console.log(oneLine);
+          }else if (user.choice == "Quit this Program\n\r"){
+            // giveMeSpace();
+            console.log("\n\rThanks again for your patronage. Have a nice day!\n\r");
+            console.log("Exiting the program ...\n\r");
+            process.kill(process.pid);
+          } else {
+          console.log("something went sideways!");
+          } 
+       });
+}
 
 
 
