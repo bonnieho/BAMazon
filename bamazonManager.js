@@ -4,6 +4,9 @@ var mysql = require("mysql");
 var inquirer = require("inquirer");
 var Table = require("cli-table");
 
+// this lets us format EOL spacing around the main menu so that it doesn't overlap any resulting full or partial table
+var os = require('os');
+
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -14,57 +17,83 @@ var connection = mysql.createConnection({
 });
 
 /*
-
 Running this application will:
 
-                    List a set of menu options:
+        List a set of menu options:
 
-                        View Products for Sale
+            View Products for Sale
 
-                        View Low Inventory
+            View Low Inventory
 
-                        Add to Inventory
+            Add to Inventory
 
-                        Add New Product
+            Add New Product
 
-                    If a manager selects View Products for Sale, the app should list every available item: the item IDs, names, prices, and quantities.
+        If a manager selects View Products for Sale, the app should list every available item: the item IDs, names, prices, and quantities.
 
-                    If a manager selects View Low Inventory, then it should list all items with an inventory count lower than five.
+        If a manager selects View Low Inventory, then it should list all items with an inventory count lower than five.
 
-                    If a manager selects Add to Inventory, your app should display a prompt that will let the manager "add more" of any item currently in the store.
+        If a manager selects Add to Inventory, your app should display a prompt that will let the manager "add more" of any item currently in the store.
 
-                    If a manager selects Add New Product, it should allow the manager to add a completely new product to the store.
+        If a manager selects Add New Product, it should allow the manager to add a completely new product to the store.
+*/
 
-                    */
+// var jsonText = '{' + os.EOL + '\t"text": "' + startMeUp() + '"' + os.EOL + '}';
+var jsonText1 = '{' + os.EOL;
+var jsonText2 = os.EOL + '}';
+var jsonText3 = os.EOL;
+var oneLine = "\n\r";
 
-inquirer.
-  prompt([
-      {
-        type:'list',
-        choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product"],
-        message: "Welcome, Manager. Choose what you would like to do.",
-        name: "choice"
-      }
-    ]).then(function(user){
-      console.log(user.choice);
-      if(user.choice == "View Products for Sale"){
-        viewProds();
-      }else if(user.choice == "View Low Inventory"){
-        lowInv();
-      }else if(user.choice == "Add to Inventory"){
-        addQty();
-      }else if(user.choice == "Add New Product"){
-        newItem();
-      }else{
-        console.log("something went sideways!");
-        }  
-   });
+function giveMeSpace() {
+	  	console.log(jsonText3);
+	}
 
+
+
+startMeUp();
+
+function startMeUp() {
+	inquirer.
+	  prompt([
+	      {
+	        type:'list',
+	        choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "Quit this Program\n\r" ],
+	        message: "Welcome, Manager. Choose what you would like to do:\n",
+	        name: "choice"
+	      }
+	    ]).then(function(user){
+	      console.log(user.choice);
+	      if(user.choice == "View Products for Sale"){
+	        viewProds();
+	        // giveMeSpace();
+	      }else if(user.choice == "View Low Inventory"){
+	      	console.log("Products with Inventory Below FIVE Units");
+	        lowInv();
+	      }else if(user.choice == "Add to Inventory"){
+	      	giveMeSpace();
+	      	console.log("Modify In-Stock Product Amounts ...");
+	        addQty();
+	      }else if(user.choice == "Add New Product"){
+	      	giveMeSpace();
+	      	console.log("Adding New Product to Inventory ...");
+	        newItem();
+	      }else if(user.choice == "Quit this Program"){
+	      	giveMeSpace();
+	      	console.log("Exiting the program ...")
+	        process.kill(process.pid);
+	      }else{
+	        console.log("something went sideways!");
+	        }  
+	   });
+}
 
 /* =============================================================== */
 /* this works to display the products in a table */
 
 function viewProds(){
+	// adding space before rendered table
+   console.log(oneLine);
+
   connection.query("SELECT item_id, product_name, price, stock_quantity FROM products;", function(err, res){
     if(err) throw err;
     // console.log(res);
@@ -83,10 +112,25 @@ function viewProds(){
         [res[i].item_id, res[i].product_name, res[i].price.toFixed(2), res[i].stock_quantity] // .toFixed(2) forces trailing zeros in prices
       );   
     };
-    console.log(tableInventory.toString());
-  });
-}
+    // giving the table a caption
+   	console.log("Current Products for Sale");
 
+    console.log(tableInventory.toString());
+
+    // adding space AFTER rendered table
+   	console.log(oneLine);
+   	giveMeSpace();
+   	console.log(oneLine);
+   	giveMeSpace();
+
+  });
+
+  // adding space after rendered table
+   // giveMeSpace();
+
+  startMeUp();
+
+}
 
 
 /* =============================================================== */
@@ -110,6 +154,10 @@ function lowInv() {
       );   
     };
     console.log(tableInventory.toString());
+
+    // adding space after rendered table
+    giveMeSpace();
+
   });
 }
 
@@ -161,6 +209,7 @@ function addQty(){
     }).then (function(item){ 
     	viewProd(item);
 	});
+    
 }
 
 
@@ -185,6 +234,10 @@ function viewProd(item){
 	  [res[0].item_id, res[0].product_name, res[0].price.toFixed(2), res[0].stock_quantity] // .toFixed(2) forces trailing zeros in prices
 	);   
     console.log(tableInventory.toString());
+
+    // adding space after rendered table
+    giveMeSpace();
+
   });
 };
 
