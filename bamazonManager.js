@@ -38,46 +38,49 @@ Running this application will:
         If a manager selects Add New Product, it should allow the manager to add a completely new product to the store.
 */
 
-// var jsonText = '{' + os.EOL + '\t"text": "' + startMeUp() + '"' + os.EOL + '}';
-var jsonText1 = '{' + os.EOL;
-var jsonText2 = os.EOL + '}';
-var jsonText3 = os.EOL;
+
+var jsonText = os.EOL;
 var oneLine = "\n\r";
 
 function giveMeSpace() {
-	  	console.log(jsonText3);
+	  	console.log(jsonText);
+	  	console.log(oneLine);
 	}
 
 
 
 startMeUp();
 
+
 function startMeUp() {
 	inquirer.
 	  prompt([
 	      {
 	        type:'list',
-	        choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "Quit this Program\n\r" ],
-	        message: "Welcome, Manager. Choose what you would like to do:\n",
+	        choices: ["View Products for Sale", "View Low Inventory", "Modify Inventory Quantities", "Add New Product", "Quit this Program\n\r" ],
+	        message: "\nWelcome, Manager. Choose what you would like to do:\n",
 	        name: "choice"
 	      }
 	    ]).then(function(user){
 	      console.log(user.choice);
 	      if(user.choice == "View Products for Sale"){
 	        viewProds();
-	        // giveMeSpace();
+	        console.log(oneLine);
+	        startMeUp();
 	      }else if(user.choice == "View Low Inventory"){
-	      	console.log("Products with Inventory Below FIVE Units");
 	        lowInv();
-	      }else if(user.choice == "Add to Inventory"){
-	      	giveMeSpace();
-	      	console.log("Modify In-Stock Product Amounts ...");
+	        console.log(oneLine);
+	        startMeUp();
+	      }else if(user.choice == "Modify Inventory Quantities"){
 	        addQty();
+	        console.log(oneLine);
+	        // startMeUp();
 	      }else if(user.choice == "Add New Product"){
 	      	giveMeSpace();
 	      	console.log("Adding New Product to Inventory ...");
 	        newItem();
-	      }else if(user.choice == "Quit this Program"){
+	        console.log(oneLine);
+	      }else if(user.choice == "Quit this Program\n\r"){
 	      	giveMeSpace();
 	      	console.log("Exiting the program ...")
 	        process.kill(process.pid);
@@ -119,17 +122,10 @@ function viewProds(){
 
     // adding space AFTER rendered table
    	console.log(oneLine);
-   	giveMeSpace();
+   	console.log("Use Up or Down Arrow Keys to Continue ...")
    	console.log(oneLine);
    	giveMeSpace();
-
   });
-
-  // adding space after rendered table
-   // giveMeSpace();
-
-  startMeUp();
-
 }
 
 
@@ -137,6 +133,9 @@ function viewProds(){
 /* Display the products in a table with quantities lower than 5 */
 
 function lowInv() {
+	// adding space before rendered table
+   console.log(oneLine);
+
   var query = "SELECT item_id, product_name, price, stock_quantity FROM products WHERE stock_quantity < 5";
   connection.query(query, function(err, res) {
   	if(err) throw err;
@@ -153,12 +152,30 @@ function lowInv() {
         [res[i].item_id, res[i].product_name, res[i].price.toFixed(2), res[i].stock_quantity] // .toFixed(2) forces trailing zeros in prices
       );   
     };
+
+    // giving the table a caption
+	console.log("Products with Inventory Below FIVE Units");
+
     console.log(tableInventory.toString());
 
     // adding space after rendered table
-    giveMeSpace();
-
+   	console.log(oneLine);
+   	console.log("Use Up or Down Arrow Keys to Continue ...")
+   	console.log(oneLine);
+   	giveMeSpace();
   });
+
+/*
+  document.keydown(function waitForArrow() {
+    if(keyCode == 38 || keyCode == 40) {
+    	startMeUp();
+    } else {
+	preventDefault();
+    }
+});
+  waitForArrow();
+*/
+
 }
 
 
@@ -193,6 +210,7 @@ function addQty(){
           }
       	},
     ]).then(function(increase){
+    	console.log("\nModifying In-Stock Product Amounts ...\n");
         var updateQuery = "UPDATE products SET stock_quantity = stock_quantity + ? WHERE ?;";
         // WHERE clause takes object consisting of key value pairs, hence the curlies
         connection.query(updateQuery, [ increase.qty, { item_id: increase.item }], function(err, res) {
@@ -209,7 +227,6 @@ function addQty(){
     }).then (function(item){ 
     	viewProd(item);
 	});
-    
 }
 
 
@@ -236,9 +253,12 @@ function viewProd(item){
     console.log(tableInventory.toString());
 
     // adding space after rendered table
-    giveMeSpace();
-
+   	console.log(oneLine);
+   	console.log("Use Up or Down Arrow Keys to Continue ...")
+   	console.log(oneLine);
+   	giveMeSpace();
   });
+  startMeUp();
 };
 
         
