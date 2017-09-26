@@ -72,7 +72,7 @@ function startMeUp() {
 	        console.log(oneLine);
 	        startMeUp();
 	      }else if(user.choice == "Create New Department"){
-	        // lowInv();
+	        newDept();
 	        console.log(oneLine);
 	        startMeUp();
 	      }else if(user.choice == "Quit this Program\n\r"){
@@ -108,7 +108,7 @@ function viewSales(){
 
     // loop through products in store
     for(i=0; i<res.length; i++){
-      // the tableInventory is an Array, so you can `push`, `unshift`, `splice` and the rest 
+      // the tableInventory is an Array, so you can 'push','splice', etc.
       tableInventory.push(
         [res[i].item_id, res[i].product_name, res[i].department_name, res[i].price.toFixed(2), res[i].stock_quantity] // .toFixed(2) forces trailing zeros in prices
       );   
@@ -125,6 +125,56 @@ function viewSales(){
    	giveMeSpace();
   });
 }
+
+
+
+
+
+
+/* =============================================================== */
+/* ADDS a NEW product to the inventory (database) */
+
+
+function newDept(){
+  inquirer.
+    prompt([
+        {
+          type:"input",
+          message:"Enter a name for the new department:",
+          name:"dept"
+        },
+        {
+          type:"input",
+          message:"What are the anticipated overhead costs (in whole dollars)?",
+          name:"costs"
+        }
+    ]).then(function(itsNew){
+        var insertQuery = "INSERT INTO departments (department_name, over_head_costs) VALUES (?, ?);"
+        connection.query(insertQuery, [ itsNew.dept, itsNew.costs ], function(err, res) {
+            if(err) throw err;
+
+            var boldNewItem = itsNew.dept.toUpperCase();
+
+            console.log("You have successfully added a new department called " + boldNewItem + " to your store.");
+            console.log("Here is the new record:");
+          
+          });
+
+       return itsNew.item;
+
+       // show that record was updated successfully by calling the viewDept function that just displays the record that was updated (in table format)
+    }).then (function(item){ 
+      viewDept(item);
+  });
+};
+
+
+
+
+
+
+
+
 
 
 /* =============================================================== */
@@ -145,7 +195,7 @@ function lowInv() {
         , colAligns: aligns
     });
     for (var i = 0; i < res.length; i++) {
-      // the tableInventory is an Array, so you can `push`, `unshift`, `splice` and the rest 
+      // the tableInventory is an Array, so you can `push', splice', etc.'
       tableInventory.push(
         [res[i].item_id, res[i].product_name, res[i].department_name, res[i].price.toFixed(2), res[i].stock_quantity] // .toFixed(2) forces trailing zeros in prices
       );   
@@ -228,26 +278,26 @@ function addQty(){
 
 
 /* =============================================================== */
-/* This displays only the product whose quantity was just updated OR just the new record added to the DB */
+/* This displays only the new department record added to the DB */
 
-function viewProd(item){
-  connection.query("SELECT item_id, product_name, department_name, price, stock_quantity FROM products WHERE ?;", 
+function viewDept(item){
+  connection.query("SELECT department_id, department_name, over_head_costs FROM departments WHERE ?;", 
   	{ item_id: item }, function(err, res){
 	    if(err) throw err;
 	    // console.log(res);
-		var aligns = [null, null, null, 'right', 'right'];
+		var aligns = [null, 'right'];
     // instantiate 
-    var tableInventory = new Table({
-    	head: ['Item ID', 'Product Name', 'Department', 'Price', 'Quantity']
-        , colWidths: [10, 48, 18, 10, 10]
+    var deptList = new Table({
+    	head: ['Department ID', 'Department Name', 'Overhead Costs']
+        , colWidths: [16, 48, 10]
         , colAligns: aligns
     });
 
-	// the tableInventory is an Array, so you can `push`, `unshift`, `splice` and the rest 
-	tableInventory.push(
-	  [res[0].item_id, res[0].product_name, res[0].department_name, res[0].price.toFixed(2), res[0].stock_quantity] // .toFixed(2) forces trailing zeros in prices
+	// the tableInventory is an Array, so you can 'push', 'splice', etc.
+	deptList.push(
+	  [res[0].department_id, res[0].department_name, res[0].over_head_costs] 
 	);   
-    console.log(tableInventory.toString());
+    console.log(deptList.toString());
 
     // adding space after rendered table
    	console.log(oneLine);
@@ -260,77 +310,3 @@ function viewProd(item){
 
         
     
-/* =============================================================== */
-/* ADDS a NEW product to the inventory (database) */
-
-
-function newItem(){
-  inquirer.
-    prompt([
-        {
-          type:"input",
-          message:"Create a six-letter Item ID",
-          name:"item"
-        },
-        {
-          type:"input",
-          message:"What is the Product Name of the item would you like to add?",
-          name:"prodname"
-        },
-        {
-          type:"list",
-          choices: ["Sporting Goods", "Hardware", "Kitchen"],
-          message:"What department does the product belong in?",
-          name:"deptname"
-        },
-        {
-          type:"input",
-          message:"What will the item cost?",
-          name:"newPrice"
-        },
-        {
-          type:"input",
-          message:"How many will go into the inventory intitially?",
-          name:"qty"
-        }
-    ]).then(function(itsNew){
-        var insertQuery = "INSERT INTO products (item_id, product_name, department_name, price, stock_quantity) VALUES (?, ?, ?, ?, ?);"
-        // var insertQuery = "INSERT INTO products (item_id, product_name, department_name, price, stock_quantity) VALUES (*);"
-        connection.query(insertQuery, [ itsNew.item, itsNew.prodname, itsNew.deptname, itsNew.newPrice, itsNew.qty ], function(err, res) {
-        		if(err) throw err;
-
-        		var boldNewItem = itsNew.prodname.toUpperCase();
-
-				console.log("You have successfully added a new product called " + boldNewItem + " to your inventory.");
-        		console.log("Here is the new record:");
-        	
-        	});
-
-       return itsNew.item;
-
-       // show that record was updated successfully by calling the viewProd function that just displays the record that was updated (in table format)
-    }).then (function(item){ 
-    	viewProd(item);
-	});
-};
-
-
-/* 
-          to validate a item ID entry using regular expression
-          validate: function (item) {
-            var prod = item.match(/^( \D{6});
-            if (prod) {
-              return true;
-              }
-            return 'Please enter a valid item ID';
-            } 
-
-        // item: user.item,
- */       
- 
-
-
-
-
-
-
