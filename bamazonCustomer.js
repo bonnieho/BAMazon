@@ -20,8 +20,8 @@ var jsonText = os.EOL;
 var oneLine = "\n\r";
 
 function giveMeSpace() {
-      console.log(jsonText);
-      console.log(oneLine);
+  console.log(jsonText);
+  console.log(oneLine);
   }
 
 
@@ -42,7 +42,7 @@ function selectAll(){
 
     // loop through products in store
     for(i=0; i<res.length; i++){
-      // the tableInventory is an Array, so you can `push`, `unshift`, `splice` and the rest 
+      // the tableInventory is an Array, so you can 'push' ,'splice', etc.'
       tableInventory.push(
         [res[i].item_id, res[i].product_name, res[i].price.toFixed(2)] // .toFixed(2) forces trailing zeros in prices
       );   
@@ -74,7 +74,7 @@ function buyItem(){
 
     // loop through products in store
     for(i=0; i<res.length; i++){
-      // the tableInventory is an Array, so you can `push`, `unshift`, `splice` and the rest 
+      // the tableInventory is an Array, so you can 'push', 'splice', etc.
       tableInventory.push(
         [res[i].item_id, res[i].product_name, res[i].price.toFixed(2)] // .toFixed(2) forces trailing zeros in prices
       ); 
@@ -178,107 +178,4 @@ function whatNow(){
           } 
        });
 }
-
-
-
-
-
-/*
-
-var questions = [
-    {
-          type:'list',
-          choices: res.product_name,
-          message: "Which product would you like to purchase?",
-          name: "item"
-        },
-        {
-          type:'input',
-          message:'How many would you like to buy?',
-          name:'qty',
-          validate: function (qty) {
-            var valid = !isNaN(parseFloat(qty));
-            return valid || 'Please enter a number';
-          }
-];
-
-inquirer.prompt(questions).then(function (answers) {
-  console.log('\nYour order:');
-  console.log(JSON.stringify(answers, null, '  '));
-});
-*/
-
-
-/*
-
-inquirer.
-  prompt([
-      {
-        type:‘list’,
-        choices: [“POST AN ITEM”, “BID ON ITEM”],
-        message: “Choose one!“,
-        name: “first”
-      }
-    ]).then(function(user){
-      console.log(user.first);
-      if(user.first == “POST AN ITEM”){
-        console.log(“POST SQL”);
-        PostItem();
-      }
-        else{
-          console.log(“BID SQL”);
-          BidItem();
-        }
-      
-   });
-
-function PostItem(){
-  inquirer.
-    prompt([
-        {
-          type:“input”,
-          message:“What item would you like to add?“,
-          name:“item”
-        }
-      ]).then(function(user){
-        console.log(user.item);
-        // connection.query(“INSERT INTO post SET ?“, {
-        // item: user.item,
-        // }, function(err, res) {});
-      })
-}  
-
-function BidItem(){
-  connection.query(“SELECT * FROM item”, function(err, res) {
-    if (err) throw err;
-    console.log(res);
-
-   inquirer.
-    prompt([
-        {
-          type:‘list’,
-          choices: res,
-          message: “Which item do you want to bid on?“,
-          name: “item”
-        },
-        {
-          type:“input”,
-          message:“How much do you want to bid?“,
-          name:“price”
-        }
-      ]).then(function(user){
-        
-
-       for (var i = 0; i < res.length; i++) {
-          console.log(user);
-        }
-        // connection.query(“INSERT INTO post SET ?“, {
-        // item: user.item,
-        // }, function(err, res) {});
-      })
-  });
-}    
-
-
-*/
 

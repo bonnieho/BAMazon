@@ -23,7 +23,9 @@ Running this application will list a set of menu options:
 
                 View Product Sales by Department
 
-                Create New Department
+Create New Department
+
+            
 
             When a supervisor selects View Product Sales by Department, the app should display a summarized table in their terminal/bash window. Use the table below as a guide.
 
@@ -37,9 +39,9 @@ If you can't get the table to display properly after a few hours, then feel free
 
                 Hint: You may need to look into aliases in MySQL.
 
-                Hint: You may need to look into GROUP BYs.
+Hint: You may need to look into GROUP BYs.
 
-                Hint: You may need to look into JOINS.
+Hint: You may need to look into JOINS.
 */
 
 
@@ -47,8 +49,8 @@ var jsonText = os.EOL;
 var oneLine = "\n\r";
 
 function giveMeSpace() {
-	  	console.log(jsonText);
-	  	console.log(oneLine);
+  console.log(jsonText);
+	console.log(oneLine);
 	}
 
 
@@ -62,7 +64,7 @@ function startMeUp() {
 	      {
 	        type:'list',
 	        choices: ["View Product Sales by Department", "Create New Department", "Quit this Program\n\r" ],
-	        message: "\nWelcome, Manager. Choose what you would like to do:\n",
+	        message: "\nWelcome, Supervisor. Choose what you would like to do:\n",
 	        name: "choice"
 	      }
 	    ]).then(function(user){
@@ -72,9 +74,10 @@ function startMeUp() {
 	        console.log(oneLine);
 	        startMeUp();
 	      }else if(user.choice == "Create New Department"){
-	        newDept();
-	        console.log(oneLine);
-	        startMeUp();
+	        console.log("\nCreating entry for new department ...\n");
+          giveMeSpace();
+          newDept();
+          console.log(oneLine);
 	      }else if(user.choice == "Quit this Program\n\r"){
 	      	giveMeSpace();
 	      	console.log("Exiting the program ...\n\r");
@@ -90,33 +93,32 @@ function startMeUp() {
 
 function viewSales(){
 	// adding space before rendered table
-   console.log(oneLine);
+  console.log(oneLine);
 
+  connection.query("SELECT departments.department_id, departments.department_name, departments.over_head_costs, SUM (products.product_sales) AS product_sales FROM products INNER JOIN departments ON departments.department_name=products.department_name GROUP BY departments.department_id, departments.department_name;", function(err, res){
 
-/*  ------------------ */
-
-  connection.query("SELECT item_id, product_name, department_name, price, stock_quantity FROM products;", function(err, res){
     if(err) throw err;
     // console.log(res);
-	var aligns = [null, null, null, 'right', 'right'];
+
+    var aligns = [null, null, 'right', 'right'];
     // instantiate 
-    var tableInventory = new Table({
-    	head: ['Item ID', 'Product Name', 'Department', 'Price', 'Quantity']
-        , colWidths: [10, 48, 18, 10, 10]
+    var tableDepts = new Table({
+    	head: ['Department ID', 'Department Name', 'Overhead Costs', 'Product Sales']
+        , colWidths: [16, 36, 16, 16]
         , colAligns: aligns
     });
 
     // loop through products in store
     for(i=0; i<res.length; i++){
       // the tableInventory is an Array, so you can 'push','splice', etc.
-      tableInventory.push(
-        [res[i].item_id, res[i].product_name, res[i].department_name, res[i].price.toFixed(2), res[i].stock_quantity] // .toFixed(2) forces trailing zeros in prices
+      tableDepts.push(
+        [res[i].department_id, res[i].department_name, res[i].over_head_costs, res[i].product_sales] 
       );   
     };
     // giving the table a caption
-   	console.log("Current Products for Sale");
+   	console.log("Current Sales by Department");
 
-    console.log(tableInventory.toString());
+    console.log(tableDepts.toString());
 
     // adding space AFTER rendered table
    	console.log(oneLine);
@@ -128,11 +130,8 @@ function viewSales(){
 
 
 
-
-
-
 /* =============================================================== */
-/* ADDS a NEW product to the inventory (database) */
+/* ADDS a NEW department to the bamazon store (database) */
 
 
 function newDept(){
@@ -153,147 +152,40 @@ function newDept(){
         connection.query(insertQuery, [ itsNew.dept, itsNew.costs ], function(err, res) {
             if(err) throw err;
 
-            var boldNewItem = itsNew.dept.toUpperCase();
+            var boldNewDept = itsNew.dept.toUpperCase();
 
-            console.log("You have successfully added a new department called " + boldNewItem + " to your store.");
+            console.log("You have successfully added a new department called " + boldNewDept + " to your store.");
             console.log("Here is the new record:");
           
           });
 
-       return itsNew.item;
+       return itsNew.dept;
 
        // show that record was updated successfully by calling the viewDept function that just displays the record that was updated (in table format)
-    }).then (function(item){ 
-      viewDept(item);
+    }).then (function(dept){ 
+      viewDept(dept);
   });
 };
 
 
 
-
-
-
-
-
-
-
-/* =============================================================== */
-/* Display the products in a table with quantities lower than 5 */
-
-function lowInv() {
-	// adding space before rendered table
-   console.log(oneLine);
-
-  var query = "SELECT item_id, product_name, department_name, price, stock_quantity FROM products WHERE stock_quantity < 5";
-  connection.query(query, function(err, res) {
-  	if(err) throw err;
-  	var aligns = [null, null, null, 'right', 'right'];
-    // instantiate 
-    var tableInventory = new Table({
-    	head: ['Item ID', 'Product Name', 'Department', 'Price', 'Quantity']
-        , colWidths: [10, 48, 18, 10, 10]
-        , colAligns: aligns
-    });
-    for (var i = 0; i < res.length; i++) {
-      // the tableInventory is an Array, so you can `push', splice', etc.'
-      tableInventory.push(
-        [res[i].item_id, res[i].product_name, res[i].department_name, res[i].price.toFixed(2), res[i].stock_quantity] // .toFixed(2) forces trailing zeros in prices
-      );   
-    };
-
-    // giving the table a caption
-	console.log("Products with Inventory Below FIVE Units");
-
-    console.log(tableInventory.toString());
-
-    // adding space after rendered table
-   	console.log(oneLine);
-   	console.log("Use Up or Down Arrow Keys to Continue ...")
-   	console.log(oneLine);
-   	giveMeSpace();
-  });
-
-/*
-  document.keydown(function waitForArrow() {
-    if(keyCode == 38 || keyCode == 40) {
-    	startMeUp();
-    } else {
-	preventDefault();
-    }
-});
-  waitForArrow();
-*/
-
-}
-
-
-
-/* =============================================================== */
-/* ADD more of a particular product to the inventory (database) */
-
-function addQty(){
-
-  	inquirer.
-    prompt([
-        {
-          type:"input",
-          message:"What item would you like to add more units to? Enter the Item ID:",
-          name:"item" //,
-          // to validate a item ID entry using regular expression to ensure that only six digits are entered
-          /* validate: function (item) {
-            var prod = item.match(/^( \D{6});
-            if (prod) {
-              return true;
-              }
-            return 'Please enter a valid item ID';
-            } */
-        },
-        {
-          type:'input',
-          message:'How many would you like to add?',
-          name:'qty',
-          validate: function (qty) {
-            var valid = !isNaN(parseFloat(qty));
-            return valid || 'Please enter a number';
-          }
-      	},
-    ]).then(function(increase){
-        var updateQuery = "UPDATE products SET stock_quantity = stock_quantity + ? WHERE ?;";
-        // the WHERE clause takes object consisting of key value pairs, hence the curlies
-        connection.query(updateQuery, [ increase.qty, { item_id: increase.item }], function(err, res) {
-        	if(err) throw err;
-        	
-        	console.log("You have successfully modified the product\'s quantity in inventory.");
-        	console.log("\nHere is the updated record:");
-        	
-        });
-
-        return increase.item;
-
-    // show that record was updated successfully by calling the viewProd function that just displays the record that was updated (in table format)
-    }).then (function(item){ 
-    	viewProd(item);
-	});
-}
-
-
 /* =============================================================== */
 /* This displays only the new department record added to the DB */
 
-function viewDept(item){
+function viewDept(dept){
   connection.query("SELECT department_id, department_name, over_head_costs FROM departments WHERE ?;", 
-  	{ item_id: item }, function(err, res){
+  	{ department_name: dept }, function(err, res){
 	    if(err) throw err;
 	    // console.log(res);
-		var aligns = [null, 'right'];
+		var aligns = [null, null, 'right'];
     // instantiate 
     var deptList = new Table({
     	head: ['Department ID', 'Department Name', 'Overhead Costs']
-        , colWidths: [16, 48, 10]
+        , colWidths: [16, 36, 16]
         , colAligns: aligns
     });
 
-	// the tableInventory is an Array, so you can 'push', 'splice', etc.
+	// the deptList is an Array, so you can 'push', 'splice', etc.
 	deptList.push(
 	  [res[0].department_id, res[0].department_name, res[0].over_head_costs] 
 	);   
@@ -308,5 +200,3 @@ function viewDept(item){
   startMeUp();
 };
 
-        
-    

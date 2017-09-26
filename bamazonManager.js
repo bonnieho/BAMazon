@@ -43,8 +43,8 @@ var jsonText = os.EOL;
 var oneLine = "\n\r";
 
 function giveMeSpace() {
-	  	console.log(jsonText);
-	  	console.log(oneLine);
+  console.log(jsonText);
+	console.log(oneLine);
 	}
 
 
