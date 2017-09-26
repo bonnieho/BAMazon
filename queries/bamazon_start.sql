@@ -70,6 +70,14 @@ INNER JOIN departments ON departments.department_name=products.department_name
 GROUP BY departments.department_id, departments.department_name;
 
 
+-- aliasing the result table then adding a temporary 'total_profit' column based on product_sales minus overhead_costs
+
+USE bamazon;
+
+SELECT departments.department_id, departments.department_name, departments.over_head_costs, SUM (products.product_sales) AS product_sales 
+FROM products as total
+INNER JOIN departments ON departments.department_name=products.department_name 
+GROUP BY departments.department_id, departments.department_name; ALTER TABLE total ADD COLUMN total_profit INT(6,2) NOT NULL [AFTER product_sales];
 
 
 

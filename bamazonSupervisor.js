@@ -98,21 +98,37 @@ function viewSales(){
   connection.query("SELECT departments.department_id, departments.department_name, departments.over_head_costs, SUM (products.product_sales) AS product_sales FROM products INNER JOIN departments ON departments.department_name=products.department_name GROUP BY departments.department_id, departments.department_name;", function(err, res){
 
     if(err) throw err;
+    
     // console.log(res);
 
-    var aligns = [null, null, 'right', 'right'];
+    var aligns = [null, null, 'right', 'right', 'right'];
     // instantiate 
     var tableDepts = new Table({
-    	head: ['Department ID', 'Department Name', 'Overhead Costs', 'Product Sales']
-        , colWidths: [16, 36, 16, 16]
+    	head: ['Department ID', 'Department Name', 'Overhead Costs', 'Product Sales', 'Total Profit']
+        , colWidths: [16, 36, 16, 16, 16]
         , colAligns: aligns
     });
 
-    // loop through products in store
+    /*
+        
+
+
+        WISH LIST:
+
+        I want the result table to also show ALL departments' records regardless if there are any items in the store 
+        (since there ARE overhead costs, it seems like you'd want to show the losses, too.)
+
+
+
+
+    */
+
+    // loop through store's departments
     for(i=0; i<res.length; i++){
-      // the tableInventory is an Array, so you can 'push','splice', etc.
+      var total_profit = (res[i].product_sales - res[i].over_head_costs);
+      // the tableDepts is an Array, so you can 'push','splice', etc.
       tableDepts.push(
-        [res[i].department_id, res[i].department_name, res[i].over_head_costs, res[i].product_sales] 
+        [res[i].department_id, res[i].department_name, res[i].over_head_costs, res[i].product_sales, total_profit] 
       );   
     };
     // giving the table a caption
