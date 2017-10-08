@@ -12,7 +12,7 @@ var connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
   user: "root",
-  password: "",
+  password: "H33zy4s!",
   database: "bamazon"
 });
 
@@ -95,7 +95,7 @@ function viewSales(){
 	// adding space before rendered table
   console.log(oneLine);
 
-  connection.query("SELECT departments.department_id, departments.department_name, departments.over_head_costs, SUM (products.product_sales) AS product_sales FROM products INNER JOIN departments ON departments.department_name=products.department_name GROUP BY departments.department_id, departments.department_name;", function(err, res){
+  connection.query("SELECT departments.department_id, departments.department_name, departments.over_head_costs, CASE WHEN SUM(products.product_sales) IS NULL THEN 0 ELSE SUM(products.product_sales) END AS product_sales FROM departments LEFT JOIN products ON departments.department_name=products.department_name GROUP BY departments.department_id, departments.department_name;", function(err, res){
 
     if(err) throw err;
     
