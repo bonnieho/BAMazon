@@ -109,20 +109,6 @@ function viewSales(){
         , colAligns: aligns
     });
 
-    /*
-        
-
-
-        WISH LIST:
-
-        I want the result table to also show ALL departments' records regardless if there are any items in the store 
-        (since there ARE overhead costs, it seems like you'd want to show the losses, too.)
-
-
-
-
-    */
-
     // loop through store's departments
     for(i=0; i<res.length; i++){
       var total_profit = (res[i].product_sales - res[i].over_head_costs);
@@ -168,9 +154,10 @@ function newDept(){
         connection.query(insertQuery, [ itsNew.dept, itsNew.costs ], function(err, res) {
             if(err) throw err;
 
-            var boldNewDept = itsNew.dept.toUpperCase();
-
-            console.log("You have successfully added a new department called " + boldNewDept + " to your store.");
+            var myNewDept = itsNew.dept.toUpperCase();
+            console.log(oneLine);
+            console.log(oneLine);
+            console.log("You have successfully added a new department called " + myNewDept + " to your store.");
             console.log("Here is the new record:");
           
           });
@@ -209,10 +196,8 @@ function viewDept(dept){
 
     // adding space after rendered table
    	console.log(oneLine);
-   	console.log("Use Up or Down Arrow Keys to Continue ...")
-   	console.log(oneLine);
-   	giveMeSpace();
+    // return original inquirer list for supervisor's choice
+    startMeUp();
   });
-  startMeUp();
 };
 

@@ -10,7 +10,7 @@ var connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
   user: "root",
-  password: "",
+  password: "H33zy4s!",
   database: "bamazon"
 });
 
@@ -116,9 +116,13 @@ function buyItem(){
             if (res[0].stock_quantity < order.qty) {
 
               /* If not, the app should log a phrase like Insufficient quantity!, and then prevent the order from going through. */
-
+              console.log(oneLine);
               console.log("We\'re sorry - We do not have sufficient quantities of the product in stock at this time!");
               console.log("Thank you for your interest. Please check back again soon.");
+		          console.log(oneLine);
+		// follow-up prompt
+                whatNow();
+
             } else {
                
               /* However, if your store does have enough of the product, you should fulfill the customer's order.

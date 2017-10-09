@@ -1,4 +1,4 @@
-// bamazon MANGER app
+// bamazon MANAGER app
 
 var mysql = require("mysql");
 var inquirer = require("inquirer");
@@ -12,7 +12,7 @@ var connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
   user: "root",
-  password: "",
+  password: "H33zy4s!",
   database: "bamazon"
 });
 
@@ -191,9 +191,9 @@ function addQty(){
           type:"input",
           message:"What item would you like to add more units to? Enter the Item ID:",
           name:"item" //,
-          // to validate a item ID entry using regular expression to ensure that only six digits are entered
+          // to validate a item ID entry using regular expression to ensure that only six upper-case letters are entered
           /* validate: function (item) {
-            var prod = item.match(/^( \D{6});
+            var prod = item.match(/^([A-Z]\d{4});
             if (prod) {
               return true;
               }
@@ -215,6 +215,8 @@ function addQty(){
         connection.query(updateQuery, [ increase.qty, { item_id: increase.item }], function(err, res) {
         	if(err) throw err;
         	
+          console.log(oneLine);
+          console.log(oneLine);
         	console.log("You have successfully modified the product\'s quantity in inventory.");
         	console.log("\nHere is the updated record:");
         	
@@ -252,12 +254,10 @@ function viewProd(item){
     console.log(tableInventory.toString());
 
     // adding space after rendered table
-   	console.log(oneLine);
-   	console.log("Use Up or Down Arrow Keys to Continue ...")
-   	console.log(oneLine);
-   	giveMeSpace();
+    console.log(oneLine);
+    // return original inquirer list for manager's choice
+    startMeUp();
   });
-  startMeUp();
 };
 
         
@@ -267,53 +267,74 @@ function viewProd(item){
 
 
 function newItem(){
-  inquirer.
+  // first, I want to pull an array of current departments to use to populate the dept list in the inquirer
+  var allDepts = [];
+  var deptQuery = "SELECT department_name FROM departments;"
+  connection.query(deptQuery, function(err, res) {
+    if(err) throw err;
+    // hold department names in an array
+    for (var i = 0; i < res.length; i++) {
+    // the allDepts is an Array, so you can `push`, `unshift`, `splice` and the rest 
+      allDepts.push(res[i].department_name);   
+    };
+    inquirer.
     prompt([
-        {
-          type:"input",
-          message:"Create a six-letter Item ID",
-          name:"item"
-        },
-        {
-          type:"input",
-          message:"What is the Product Name of the item would you like to add?",
-          name:"prodname"
-        },
-        {
-          type:"list",
-          choices: ["Sporting Goods", "Hardware", "Kitchen"],
-          message:"What department does the product belong in?",
-          name:"deptname"
-        },
-        {
-          type:"input",
-          message:"What will the item cost?",
-          name:"newPrice"
-        },
-        {
-          type:"input",
-          message:"How many will go into the inventory intitially?",
-          name:"qty"
-        }
+      {
+        type:"input",
+        message:"Create a six-letter Item ID",
+        name:"item"
+         // to validate a item ID entry using regular expression to ensure that only six upper-case letters are entered
+        /* validate: function (item) {
+          var prod = item.match(/^([A-Z]\d{4});
+          if (prod) {
+            return true;
+            }
+          return 'Please enter a valid item ID';
+          } */
+      },
+      {
+        type:"input",
+        message:"What is the Product Name of the item would you like to add?",
+        name:"prodname"
+      },
+      {
+        type:"list",
+        // allDepts is the current List array so it goes below so it's the list to choose from
+        choices: allDepts,
+        message:"What department does the product belong in?",
+        name:"deptname"
+      },
+      {
+        type:"input",
+        message:"What will the item cost?",
+        name:"newPrice"
+      },
+      {
+        type:"input",
+        message:"How many will go into the inventory initially?",
+        name:"qty"
+      }
     ]).then(function(itsNew){
-        var insertQuery = "INSERT INTO products (item_id, product_name, department_name, price, stock_quantity) VALUES (?, ?, ?, ?, ?);"
-        // var insertQuery = "INSERT INTO products (item_id, product_name, department_name, price, stock_quantity) VALUES (*);"
-        connection.query(insertQuery, [ itsNew.item, itsNew.prodname, itsNew.deptname, itsNew.newPrice, itsNew.qty ], function(err, res) {
-        		if(err) throw err;
+      var insertQuery = "INSERT INTO products (item_id, product_name, department_name, price, stock_quantity) VALUES (?, ?, ?, ?, ?);"
+      connection.query(insertQuery, [ itsNew.item, itsNew.prodname, itsNew.deptname, itsNew.newPrice, itsNew.qty ], function(err, res) {
+        if(err) throw err;
 
-        		var boldNewItem = itsNew.prodname.toUpperCase();
+        var myNewItem = itsNew.prodname.toUpperCase();
+        console.log(oneLine);
+        console.log(oneLine);
+        console.log("You have successfully added a new product called " + myNewItem + " to your inventory.");
+        console.log("\nHere is the new record:");
+          
+      });
 
-				console.log("You have successfully added a new product called " + boldNewItem + " to your inventory.");
-        		console.log("Here is the new record:");
-        	
-        	});
+     return itsNew.item;
 
-       return itsNew.item;
-
-       // show that record was updated successfully by calling the viewProd function that just displays the record that was updated (in table format)
+    // show that record was updated successfully by calling the viewProd function that just displays the record that was updated (in table format)
     }).then (function(item){ 
-    	viewProd(item);
-	});
+      viewProd(item);
+    });
+  });
+  
 };
 
 
