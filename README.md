@@ -13,7 +13,7 @@ Due to this being a command line application exclusively, there was the added ch
 
 NPMs utilized in this exercise were `mysql`, `inquirer`, `os`, and in order to display resulting database tables and records to the console in a tabular fashion, the Node package, `cli-table` was also implemented. 
 
-
+- - - 
 
 ### Customer View - bamazonCustomer.js
 
@@ -44,10 +44,7 @@ A Node application called `bamazonCustomer.js` was created to handle the basic r
 
 
 
-The app then prompts the user for the ID of the product they would like to purchase and then for how many units of that product they desire.
-
-![Bamazon Customer products](screenshots/_01_bamazon_CUSTOMER_product_table_inquirer_purchase_choices.png) 
-
+The app then prompts the user to choose the name of the product they would like to purchase and then how many units of that product they desire.
 
 
 Once the customer has placed the order, the application references the `products` table in the MySQL database through a query to confirm that the store has enough of the product to meet the customer's request.
@@ -110,7 +107,7 @@ Lastly, when a manager selects `Add New Product`, the app will permit the admini
 
 **Specifics:**
 
-Lastly, a Node application called `bamazonSupervisor.js` was created to handle necessary tasks for a supervisor's interface. Running this application first displays all of the administrative functions available to a store supervisor:
+Lastly, a Node application called `bamazonSupervisor.js` was created to handle necessary tasks for a supervisor's interface. Running this application first displays the two administrative functions available to a store supervisor:
 
 ![Bamazon Supervisor admin option choice list](screenshots/_10_bamazon_SUPERVISOR_inquirer_choice_list.png)
 
@@ -124,18 +121,13 @@ A new MySQL table called `departments` was created, including the following colu
    * _over_head_costs_ (a monetary amount arbitrarily set for each department)
 
 
-The `products` table was modified to now include a `product_sales` column and the original `bamazonCustomer.js` app ws revisited to ensure that this value is updated with each individual product's total revenue from each sale.
+The `products` table was modified to now include a `product_sales` column and the original `bamazonCustomer.js` app was revisited to ensure that this value is updated with each individual product's total revenue from each sale.
 
 ==================
-3. Modify your `bamazonCustomer.js` app so that when a customer purchases anything from the store, the price of the product multiplied by the quantity purchased is added to the product's product_sales column.
+Additionally, the initial `bamazonCustomer.js` app was also modified so that when a customer purchases anything from the store, the price of the product multiplied by the quantity purchased is added to the product's `product_sales` column.
 
    * Make sure your app still updates the inventory listed in the `products` column.
 
-4. Create another Node app called `bamazonSupervisor.js`. Running this application will list a set of menu options:
-
-   * View Product Sales by Department
-
-   * Create New Department
 
 
 When a supervisor selects `View Product Sales by Department`, the app displays a summarized table in the terminal/bash window. 
@@ -146,7 +138,8 @@ When a supervisor selects `View Product Sales by Department`, the app displays a
 
 ===================
 
-A value for total profit of each department is displayed in a `total_profit` column and is calculated on the fly using the difference between `over_head_costs` and `product_sales`. `total_profit` is generated dynamically and is not stored in the database:
+A value for total profit of each department is displayed in a `total_profit` column and is calculated on the fly using the difference between `over_head_costs` and `product_sales`. 
+*Total Profit is generated dynamically and is not stored in the database*:
 
 ![Bamazon Supervisor display table of product sales by dept](screenshots/_11_bamazon_SUPERVISOR_table_product_sales_by_department.png)
 
@@ -165,7 +158,7 @@ A value for total profit of each department is displayed in a `total_profit` col
 - - - 
 
 
-(c)2017 Bonnie Lynne Hoffman toward the completion of The University of Texas at Austin Houston Coding Boot Camp Certificate *(June 2017 cohort)*
+(c)2017 __Bonnie Lynne Hoffman__ *toward the completion of The University of Texas at Austin Houston Coding Boot Camp Certificate - (June 2017 cohort)*
 
 
 
