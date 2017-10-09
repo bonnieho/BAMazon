@@ -1,10 +1,5 @@
 # BAMazon
 
-
-* Include screenshots of typical user flows through your application (for the customer and if relevant the manager/supervisor). This includes views of the prompts and the responses after their selection (for the different selection options).
-
-* Include any other screenshots you deem necessary to help someone who has never been introduced to your application understand the purpose and function of it. This is how you will communicate to potential employers/other developers in the future what you built and why, and to show how it works. 
-
 ## Overview
 
 This exercise showcases the creation a CLI application that successfully displays and modifies records in a **MySQL** database exclusively within a **Node.js** environment. The basic application requirements were to create an Amazon-like storefront that can take in orders from customers and as a result of a purchase, decrease the corresponding item's stock amount in the inventory. Additionally, both manager and supervisor interfaces allow the user to further manipulate the database tables to modify inventory products and amounts and view sales by departments using SUM and GROUP BY statements within specific queries.
