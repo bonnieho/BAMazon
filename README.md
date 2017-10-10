@@ -28,8 +28,11 @@ This table contains the following columns:
 
    * stock_quantity (how much of the product is currently available in store)
 
+![Bamazon SQL db and products table initialized](screenshots/01_bamazon_sql_setup_db_products.png)
+
 This database was initially populated with 10 different products using a 'seed' query file.
 
+![Bamazon SQL products table populated](screenshots/03_bamazon_sql_seed_products.png)
 
 **Application Specifics:**
 
@@ -68,9 +71,11 @@ Alternately, a Node application called `bamazonManager.js` was created to handle
 ![Bamazon Manager admin option choice list](screenshots/_04_bamazon_MANAGER_inquirer_choice_list.png)
 
 
+
 Selecting `View Products for Sale` will list every available product in a simple, clean table based on columns containing item IDs, names, prices, and quantities:
 
 ![Bamazon Manager choice - product list](screenshots/_05_bamazon_MANAGER_product_list_choice.png)
+
 
 
 Selecting `View Low Inventory` will display all items with an inventory count lower than five; again, in tabular format:
@@ -78,9 +83,11 @@ Selecting `View Low Inventory` will display all items with an inventory count lo
 ![Bamazon Manager low inventory table](screenshots/_06_bamazon_MANAGER_low_inventory_table.png)
 
 
+
 By selecting `Add to Inventory`, the app returns a prompt that allows a manager to increase the quantity of any item currently in the store:
 
 ![Bamazon Manager modify product quantity](screenshots/_07_bamazon_MANAGER_modifying_inventory_quantity.png)
+
 
 
 
@@ -115,10 +122,11 @@ A new MySQL table called `departments` was created, including the following colu
 
    * _over_head_costs_ (a monetary amount arbitrarily set for each department)
 
+![Bamazon SQL department table initialized](screenshots/02_bamazon_sql_setup_depts.png)
 
 The `products` table was modified to now include a `product_sales` column and the original `bamazonCustomer.js` app was revisited to ensure that this value is updated with each individual product's total revenue from each sale.
 
-==================
+**==================**
 Additionally, the initial `bamazonCustomer.js` app was also modified so that when a customer purchases anything from the store, the price of the product multiplied by the quantity purchased is added to the product's `product_sales` column.
 
    * Make sure your app still updates the inventory listed in the `products` column.
@@ -131,7 +139,7 @@ When a supervisor selects `View Product Sales by Department`, the app displays a
 
    * Hint: You may need to look into JOINS.
 
-===================
+**===================**
 
 A value for total profit of each department is displayed in a `total_profit` column and is calculated on the fly using the difference between `over_head_costs` and `product_sales`. 
 *Total Profit is generated dynamically and is not stored in the database*:
@@ -139,13 +147,14 @@ A value for total profit of each department is displayed in a `total_profit` col
 ![Bamazon Supervisor display table of product sales by dept](screenshots/_11_bamazon_SUPERVISOR_table_product_sales_by_department.png)
 
 
-
+When a supervisor selects `Create New Department`, the app will permit the administative user to follow the prompts to enter a new department name into the store, complete with initial estimated overhead costs:
 
 ![Bamazon Supervisor create new dept success](screenshots/_12_bamazon_SUPERVISOR_create_new_department_success.png)
 
 
 - - - 
 
+**BLAH**
 
 ![Bamazon ALL choice to quit node using process kill](screenshots/_13_bamazon_ALL_quit_node_choice_using_process.kill(process.pid).png)
 
@@ -153,7 +162,9 @@ A value for total profit of each department is displayed in a `total_profit` col
 - - - 
 
 
-(c)2017 __Bonnie Lynne Hoffman__ *toward the completion of The University of Texas at Austin Houston Coding Boot Camp Certificate - (June 2017 cohort)*
+(c)2017 __Bonnie Lynne Hoffman__ 
+
+*toward the completion of The University of Texas at Austin Houston Coding Boot Camp Certificate - (June 2017 cohort)*
 
 
 

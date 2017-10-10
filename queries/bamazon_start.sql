@@ -70,6 +70,21 @@ INNER JOIN departments ON departments.department_name=products.department_name
 GROUP BY departments.department_id, departments.department_name;
 
 
+-- this one works better!
+
+USE bamazon;
+
+SELECT departments.department_id, departments.department_name, departments.over_head_costs, 
+CASE 
+	WHEN SUM(products.product_sales) IS NULL THEN 0 
+	ELSE SUM(products.product_sales) 
+	END AS product_sales 
+	FROM departments 
+	LEFT JOIN products ON departments.department_name=products.department_name 
+	GROUP BY departments.department_id, departments.department_name;
+
+
+
 -- aliasing the result table then adding a temporary 'total_profit' column based on product_sales minus overhead_costs
 
 USE bamazon;
