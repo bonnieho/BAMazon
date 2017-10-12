@@ -120,7 +120,7 @@ function buyItem(){
               console.log("We\'re sorry - We do not have sufficient quantities of the product in stock at this time!");
               console.log("Thank you for your interest. Please check back again soon.");
 		          console.log(oneLine);
-		// follow-up prompt
+		            // follow-up prompt
                 whatNow();
 
             } else {
@@ -131,7 +131,7 @@ function buyItem(){
               // Once the update goes through, show the customer the total cost of their purchase. 
               var total = (res[0].price*order.qty); 
               // Set a variable to reduce the quantity of the product by one
-              var newQty = (res[0].stock_quantity-1);
+              var newQty = (res[0].stock_quantity-order.qty);
               
 
               console.log("\n\rYou are placing an order for " + order.qty + " " + order.item + "(s) at $" + res[0].price.toFixed(2) + " each.");
@@ -139,24 +139,38 @@ function buyItem(){
               console.log("\n\rThe total for this order is: $" + total.toFixed(2));
               console.log("\n\rThank you for shopping with us!");
 
-              // need to update newQty!!
-              var query2 = "UPDATE products SET product_sales = product_sales + " + total + " WHERE ?";
+              // update product sales
+              var query2 = "UPDATE products SET product_sales = product_sales + " + total + " WHERE ?;";
               // console.log(query2);
 
-              connection.query(query2, { product_name: order.item }, function(err, res) {
+
+               // update newQty
+               var query3 = "UPDATE products SET stock_quantity = " + newQty + " WHERE ?;";
+
+              connection.query(query2, { product_name: order.item}, function(err, res) {
                 if (err) throw err;
 
+                connection.query(query3, { product_name: order.item}, function(err, res) {
+                if (err) throw err;
                 // follow-up prompt
                 whatNow();
+                });
+              // END connection.query
               });
+            // END else for sales completed bc of sufficient qty
             }
+          // END original SELECT for the product chosen
           });
+        // inquirer prompt
         });
+  // END display table of products
   });
-
+// END function buyItem
 }    
 
 buyItem();
+
+
 
 
 // Follow-up prompt to do it again or quit

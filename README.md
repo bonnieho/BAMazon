@@ -143,11 +143,7 @@ The `products` table was modified to now include a `product_sales` column, and t
 
 Additionally, the initial `bamazonCustomer.js` app was also modified so that when a customer purchases anything from the store, the price of the product multiplied by the quantity purchased is added to that product's new `product_sales` column.
 
-
-**==================**
 Lastly, it was confirmed that the app still updates the inventory amount listed in the`stock_quantity` column in the `products` table.
-
-**==================**
 
 
 When a supervisor selects `Create New Department`, the app will permit the administative user to follow the prompts to enter a new department name into the store, complete with initial estimated overhead costs:
