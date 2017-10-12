@@ -167,7 +167,7 @@ Finally, in order to minimize confusion should the user choose to exit the progr
 ...
 ```
 
-![Bamazon ALL choice to quit node using process kill](screenshots/_13_bamazon_ALL_quit_node_choice_using_process.kill(process.pid).png)
+![Bamazon ALL choice to quit node using process kill](screenshots/_13_bamazon_ALL_quit_node_choice_using_process.kill(process.pid.png)
 
 
 - - - 
