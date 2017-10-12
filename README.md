@@ -134,7 +134,7 @@ A value for total profit of each department is displayed in a `total_profit` col
 
 *Total Profit is generated dynamically and is not stored in the database* This is done using a `LEFT JOIN` and specifying the `GROUP BY`:
 
-![Bamazon Supervisor SQL db query joining and grouping of data between tables](screenshots/04_bamazon_sql_supervisor_db_group)
+![Bamazon Supervisor SQL db query joining and grouping of data between tables](screenshots/04_bamazon_sql_supervisor_db_group.png)
 
 ![Bamazon Supervisor display table of product sales by dept](screenshots/_11_bamazon_SUPERVISOR_table_product_sales_by_department.png)
 
@@ -160,6 +160,7 @@ When a supervisor selects `Create New Department`, the app will permit the admin
 Finally, in order to minimize confusion should the user choose to exit the program (and they are not familiar with how to exit a Node application in the command line), I've included as an option in most inquirer prompt lists the ability to exit using process.kill:
 
 ```
+...
  } else if (user.choice == "Quit this Program\n\r"){
             console.log("Exiting the program ...\n\r");
             process.kill(process.pid);
