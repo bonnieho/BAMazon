@@ -130,6 +130,8 @@ function buyItem(){
 
               // Once the update goes through, show the customer the total cost of their purchase. 
               var total = (res[0].price*order.qty); 
+              // Set a variable to reduce the quantity of the product by one
+              var newQty = (res[0].stock_quantity-1);
               
 
               console.log("\n\rYou are placing an order for " + order.qty + " " + order.item + "(s) at $" + res[0].price.toFixed(2) + " each.");
@@ -137,7 +139,7 @@ function buyItem(){
               console.log("\n\rThe total for this order is: $" + total.toFixed(2));
               console.log("\n\rThank you for shopping with us!");
 
-
+              // need to update newQty!!
               var query2 = "UPDATE products SET product_sales = product_sales + " + total + " WHERE ?";
               // console.log(query2);
 

@@ -132,7 +132,7 @@ A value for total profit of each department is displayed in a `total_profit` col
 
   
 
-*Total Profit is generated dynamically and is not stored in the database* This is done using a `LEFT JOIN` and specifying the `GROUP BY`:
+*Total Profit is generated dynamically and is not stored in the database.* This is done using a `LEFT JOIN` and specifying the `GROUP BY`:
 
 ![Bamazon Supervisor SQL db query joining and grouping of data between tables](screenshots/04_bamazon_sql_supervisor_db_group.png)
 
