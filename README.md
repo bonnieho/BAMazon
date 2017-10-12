@@ -124,27 +124,30 @@ A new MySQL table called `departments` was created, including the following colu
 
 ![Bamazon SQL department table initialized](screenshots/02_bamazon_sql_setup_depts.png)
 
-The `products` table was modified to now include a `product_sales` column and the original `bamazonCustomer.js` app was revisited to ensure that this value is updated with each individual product's total revenue from each sale.
-
-**==================**
-Additionally, the initial `bamazonCustomer.js` app was also modified so that when a customer purchases anything from the store, the price of the product multiplied by the quantity purchased is added to the product's `product_sales` column.
-
-   * Make sure your app still updates the inventory listed in the `products` column.
-
-
-
 When a supervisor selects `View Product Sales by Department`, the app displays a summarized table in the terminal/bash window. 
 
-   * Hint: You may need to look into GROUP BYs.
-
-   * Hint: You may need to look into JOINS.
-
-**===================**
-
 A value for total profit of each department is displayed in a `total_profit` column and is calculated on the fly using the difference between `over_head_costs` and `product_sales`. 
-*Total Profit is generated dynamically and is not stored in the database*:
+
+
+
+  
+
+*Total Profit is generated dynamically and is not stored in the database* This is done using a `LEFT JOIN` and specifying the `GROUP BY`:
+
+![Bamazon Supervisor SQL db query joining and grouping of data between tables](screenshots/04_bamazon_sql_supervisor_db_group)
 
 ![Bamazon Supervisor display table of product sales by dept](screenshots/_11_bamazon_SUPERVISOR_table_product_sales_by_department.png)
+
+
+The `products` table was modified to now include a `product_sales` column, and the original `bamazonCustomer.js` app was revisited to ensure that this value is updated with each individual product's total *revenue* from each sale.
+
+Additionally, the initial `bamazonCustomer.js` app was also modified so that when a customer purchases anything from the store, the price of the product multiplied by the quantity purchased is added to that product's new `product_sales` column.
+
+
+**==================**
+Lastly, it was confirmed that the app still updates the inventory amount listed in the`stock_quantity` column in the `products` table.
+
+**==================**
 
 
 When a supervisor selects `Create New Department`, the app will permit the administative user to follow the prompts to enter a new department name into the store, complete with initial estimated overhead costs:
@@ -154,7 +157,14 @@ When a supervisor selects `Create New Department`, the app will permit the admin
 
 - - - 
 
-**BLAH**
+Finally, in order to minimize confusion should the user choose to exit the program (and they are not familiar with how to exit a Node application in the command line), I've included as an option in most inquirer prompt lists the ability to exit using process.kill:
+
+```
+ } else if (user.choice == "Quit this Program\n\r"){
+            console.log("Exiting the program ...\n\r");
+            process.kill(process.pid);
+...
+```
 
 ![Bamazon ALL choice to quit node using process kill](screenshots/_13_bamazon_ALL_quit_node_choice_using_process.kill(process.pid).png)
 
