@@ -24,9 +24,9 @@ This table contains the following columns:
 
    * _department_name_ (which store department the product is associated with)
 
-   * price (cost of product to customer)
+   * _price_ (cost of product to customer)
 
-   * stock_quantity (how much of the product is currently available in store)
+   * _stock_quantity_ (how much of the product is currently available in store)
 
 ![Bamazon SQL db and products table initialized](screenshots/01_bamazon_sql_setup_db_products.png)
 
