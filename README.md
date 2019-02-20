@@ -168,7 +168,7 @@ Finally, in order to minimize confusion should the user choose to exit the progr
 
 - - - 
 
-###In case you're interested...
+### In case you're interested...
 
 #### Local Environment Setup
 
@@ -185,11 +185,10 @@ cd bamazon
 **Step 3 - Install the required NPM packages using the following command:**
 ```
 npm install
-
+```
 **Step 4 - Initialize your mySql database by running the following query:**
 ```
 bamazon_start.sql
-
 ```
 **Step 5 - Start the application server using any of the following commands:**
 ```
