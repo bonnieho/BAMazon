@@ -197,6 +197,8 @@ node bamazonManager.js
 node bamazonSupervisor.js
 ```
 
+- - - 
+
 (c)2017 __Bonnie Lynne Hoffman__ 
 
 *toward the completion of The University of Texas at Austin Houston Coding Boot Camp Certificate - (June 2017 cohort)*
