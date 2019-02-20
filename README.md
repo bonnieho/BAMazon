@@ -168,6 +168,35 @@ Finally, in order to minimize confusion should the user choose to exit the progr
 
 - - - 
 
+###In case you're interested...
+
+#### Local Environment Setup
+
+To use this version of "BAMazon" from your own local environment, here's what you've got to do:
+
+**Step 1 - Clone this repo in the command line below using the following text:**
+```
+git clone https://github.com/bonnieho/BAMazon.git
+```
+**Step 2 - In you local directory structure, navigate into the newly cloned repo directory:**
+```
+cd bamazon
+```
+**Step 3 - Install the required NPM packages using the following command:**
+```
+npm install
+
+**Step 4 - Initialize your mySql database by running the following query:**
+```
+bamazon_start.sql
+
+```
+**Step 5 - Start the application server using any of the following commands:**
+```
+node bamazonCustomer.js
+node bamazonManager.js
+node bamazonSupervisor.js
+```
 
 (c)2017 __Bonnie Lynne Hoffman__ 
 
